@@ -23,7 +23,34 @@ OPCODES = {
     "bne":      {"code": "00010101", "tipo": "BRANCH"},
     "jal":      {"code": "00010010", "tipo": "J"},
     "j":        {"code": "00010110", "tipo": "J"},
-    "halt":     {"code": "11111111", "tipo": "NONE"}
+    "halt":     {"code": "11111111", "tipo": "NONE"},
+    
+    # 8 instruções minimas
+
+    # Multiplicação inteira.
+    "mul":      {"code": "00100000", "tipo": "R_R_R"},
+
+    # Divisão inteira (ra / rb).
+    "div":        {"code": "00100001", "tipo": "R_R_R"},
+
+     # Resto da divisão inteira (ra % rb).
+    "mod":     {"code": "00100010", "tipo": "R_R_R"},
+
+    #  Incrementa ra em +1 e coloca resultado em rc.
+    "inc":      {"code": "00100011", "tipo": "R_R"},
+
+    # Decrementa ra em -1 e coloca em rc.
+    "dec":        {"code": "00100100", "tipo": "R_R"},
+
+    # Move uma constante de 16 bits para rc.
+    "movi":     {"code": "00100101", "tipo": "CONST"},
+
+    # NOT bit a bit entre ra e rb (pouco útil, mas fácil).
+    "notbit":      {"code": "00100110", "tipo": "R_R_R"},
+
+     # No Operation (não faz nada).
+    "nop": {"code": "00100111", "tipo": "NOP"},
+
 }
 
 # FUNÇÕES AUXILIARES
@@ -65,6 +92,10 @@ def montar_instrucao(linha):
 
     op, tipo = OPCODES[cmd]["code"], OPCODES[cmd]["tipo"]
     args = partes[1:]
+
+    # NOP — não faz nada, só ocupa um ciclo
+    if tipo == "NOP":
+        return op + "0" * 24
 
     # R_R_R  opcode | ra | rb | rc
     if tipo == "R_R_R":
