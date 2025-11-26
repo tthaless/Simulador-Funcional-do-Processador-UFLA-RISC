@@ -41,3 +41,13 @@ class CPU(MemoryLoader):
         
         # Incrementa o PC para a próxima instrução
         self.incr_pc()
+
+        # 2. ESTÁGIO ID (Instruction Decode) - Decodificação
+        
+        opcode = self.extract_field(instrucao, 24, 31)
+        ra_idx = self.extract_field(instrucao, 16, 23)
+        rb_idx = self.extract_field(instrucao, 8, 15)
+        rc_idx = self.extract_field(instrucao, 0, 7)
+        
+        const16 = self.extract_field(instrucao, 8, 23)
+        addr24  = self.extract_field(instrucao, 0, 23)
