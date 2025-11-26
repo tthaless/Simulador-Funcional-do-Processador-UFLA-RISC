@@ -33,7 +33,7 @@ class CPU(MemoryLoader):
             cycle_count += 1
             
             # Limite para impedir loop infinito
-            if cycle_count > 1000:
+            if cycle_count > 5000:
                 print("AVISO: Limite de ciclos de segurança atingido (Loop infinito?)")
                 break
         
@@ -96,12 +96,79 @@ class CPU(MemoryLoader):
         #print("-" * 40)
         # ------------------------------------
         
+        # Converter valores para inteiros com sinal (Necessário para contas matemáticas)
+        signed_ra = self.uint32_to_signed(val_ra)
+        signed_rb = self.uint32_to_signed(val_rb)
+
         # --- Instruções ALU
         if opcode == 1: # ADD
-            pass
+            res_signed = signed_ra + signed_rb
+            # Overflow: Soma de dois positivos dá negativo ou dois negativos dá positivo
+            overflow = (signed_ra > 0 and signed_rb > 0 and res_signed < 0) or \
+                       (signed_ra < 0 and signed_rb < 0 and res_signed > 0)
+            # Carry (unsigned overflow)
+            carry = (val_ra + val_rb) > 0xFFFFFFFF
+            
+            self.write_reg(rc, res_signed)
+            self._update_flags_alu(res_signed, overflow, carry)
             
         elif opcode == 2: # SUB
-            pass
+            res_signed = signed_ra - signed_rb
+            # Overflow na subtração
+            overflow = (signed_ra > 0 and signed_rb < 0 and res_signed < 0) or \
+                       (signed_ra < 0 and signed_rb > 0 and res_signed > 0)
+            carry = val_ra < val_rb
+            
+            self.write_reg(rc, res_signed)
+            self._update_flags_alu(res_signed, overflow, carry)
+
+        elif opcode == 3: # ZEROS
+            self.write_reg(rc, 0)
+            self._update_flags_alu(0)
+
+        elif opcode == 4: # XOR
+            res = val_ra ^ val_rb
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 5: # OR
+            res = val_ra | val_rb
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 6: # NOT
+            res = ~val_ra
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 7: # AND
+            res = val_ra & val_rb
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 8: # ASL
+            res = val_ra << (val_rb & 0x1F)
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 9: # ASR
+            res = signed_ra >> (val_rb & 0x1F)
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 10: # LSL
+            res = val_ra << (val_rb & 0x1F)
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 11: # LSR
+            res = val_ra >> (val_rb & 0x1F)
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 12: # COPY
+            self.write_reg(rc, val_ra)
+            self._update_flags_alu(val_ra)
             
         elif opcode == 16: # LOAD
             pass
