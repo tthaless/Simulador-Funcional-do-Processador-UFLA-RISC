@@ -63,13 +63,17 @@ class CPU(MemoryLoader):
         
         const16 = self.extract_field(instrucao, 8, 23)
         addr24  = self.extract_field(instrucao, 0, 23)
-
-        # Leitura dos registradores (Busca de operandos)
-        val_ra = self.read_reg(ra_idx)
-        val_rb = self.read_reg(rb_idx)
         
+        if 0 <= ra_idx < 32:
+            val_ra = self.read_reg(ra_idx)
+        else:
+            val_ra = 0
 
-
+        if 0 <= rb_idx < 32:
+            val_rb = self.read_reg(rb_idx)
+        else:
+            val_rb = 0
+        
         # 3. ESTÁGIO EX/MEM (Execução) e 4. WB (Write Back)
         
         # Debug 
