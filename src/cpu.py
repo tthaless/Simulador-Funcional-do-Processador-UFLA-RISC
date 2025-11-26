@@ -16,6 +16,8 @@ class CPU(MemoryLoader):
             7: "AND", 8: "ASL", 9: "ASR", 10: "LSL", 11: "LSR", 12: "COPY",
             14: "LCLH", 15: "LCLL", 16: "LOAD", 17: "STORE",
             18: "JAL", 19: "JR", 20: "BEQ", 21: "BNE", 22: "J",
+            32: "MUL", 33: "DIV", 34: "MOD", 35: "INC", 
+            36: "DEC", 37: "MOVI", 38: "NOTBIT", 39: "NOP",
             255: "HALT" 
         }
 
@@ -76,6 +78,12 @@ class CPU(MemoryLoader):
 
         self.execute_instruction(opcode, ra_idx, rb_idx, rc_idx, 
                                  val_ra, val_rb, const16, addr24, current_pc)
+        
+    def _update_flags_alu(self, result, overflow=False, carry=False):
+        self.state.flags.zero = 1 if (result & WORD_MASK) == 0 else 0
+        self.state.flags.neg = 1 if (result & (1 << 31)) else 0
+        self.state.flags.overflow = 1 if overflow else 0
+        self.state.flags.carry = 1 if carry else 0
 
     def execute_instruction(self, opcode, ra, rb, rc, val_ra, val_rb, const16, addr24, current_pc):
 
