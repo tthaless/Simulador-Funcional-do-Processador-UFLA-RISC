@@ -200,9 +200,26 @@ class CPU(MemoryLoader):
             except IndexError:
                 print(f"Erro: Tentativa de escrita em endereço inválido {addr}")
                 self.state.halted = True
+
+        # Instruções de Controle de Fluxo (jumps e branches)
+        elif opcode == 18: # JAL
+            self.write_reg(31, self.state.pc)
+            self.set_pc(addr24)
+
+        elif opcode == 19: # JR
+            target = self.read_reg(rc)
+            self.set_pc(target)
+
+        elif opcode == 20: # BEQ
+            if val_ra == val_rb:
+                self.set_pc(rc)
+
+        elif opcode == 21: # BNE
+            if val_ra != val_rb:
+                self.set_pc(rc)
             
-        elif opcode == 22: # JUMP
-            pass
+        elif opcode == 22: # J
+            self.set_pc(addr24)
 
         else:
             # Se não é HALT e não conhecemos o opcode, é uma instrução desconhecida (ou NOP)
