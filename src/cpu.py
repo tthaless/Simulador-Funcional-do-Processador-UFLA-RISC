@@ -33,21 +33,67 @@ class CPU(MemoryLoader):
         
         print(f"--- Execução Finalizada em {cycle_count} ciclos ---")
 
-    def step(self):
-        # 1. ESTÁGIO IF (Instruction Fetch) - Busca
-        # Busca a instrução na memória usando o PC atual
+   def step(self):
+        # 1. ESTÁGIO IF (Instruction Fetch)
         current_pc = self.state.pc
         instrucao = self.fetch_instruction() 
-        
-        # Incrementa o PC para a próxima instrução
-        self.incr_pc()
+        self.incr_pc() 
 
-        # 2. ESTÁGIO ID (Instruction Decode) - Decodificação
+        # 2. ESTÁGIO ID (Instruction Decode)
         
+        # Tratamento antecipado do HALT (evita ler reg 255 inválido)
+        if instrucao == 0xFFFFFFFF:
+            self.state.halted = True
+            print(f"PC({current_pc}): HALT encontrado.")
+            return
+
+        # Extração dos campos
         opcode = self.extract_field(instrucao, 24, 31)
         ra_idx = self.extract_field(instrucao, 16, 23)
         rb_idx = self.extract_field(instrucao, 8, 15)
         rc_idx = self.extract_field(instrucao, 0, 7)
-        
         const16 = self.extract_field(instrucao, 8, 23)
         addr24  = self.extract_field(instrucao, 0, 23)
+
+        # Leitura dos registradores (Busca de operandos)
+        val_ra = self.read_reg(ra_idx)
+        val_rb = self.read_reg(rb_idx)
+
+        # 3. ESTÁGIO EX/MEM e WB
+        self.execute_instruction(opcode, ra_idx, rb_idx, rc_idx, 
+                                 val_ra, val_rb, const16, addr24, current_pc)
+
+    def execute_instruction(self, opcode, ra, rb, rc, val_ra, val_rb, const16, addr24, current_pc):
+        # --- Instruções ALU (Esqueleto para a Pessoa 4) ---
+        if opcode == 1: # ADD
+            pass
+        elif opcode == 2: # SUB
+            pass
+        elif opcode == 16: # LOAD
+            pass
+        elif opcode == 17: # STORE
+            pass
+        elif opcode == 22: # JUMP
+            pass
+        else:
+            pass
+
+# -----------------------------------------------------------------------------
+# Bloco de Teste Rápido
+# -----------------------------------------------------------------------------
+if __name__ == "__main__":
+    import os
+    bin_file = "programa.bin"
+    
+    if os.path.exists(bin_file):
+        print("Arquivo programa.bin encontrado. Iniciando teste da CPU...")
+        cpu = CPU()
+        cpu.load_from_file(bin_file, verbose=True)
+        cpu.run()
+        
+        print("\nEstado Final dos Registradores:")
+        for r in cpu.dump_registers():
+            if r[1] != 0:
+                print(f"R{r[0]}: {r[1]} (Int: {r[2]})")
+    else:
+        print(f"ERRO: {bin_file} não encontrado")
