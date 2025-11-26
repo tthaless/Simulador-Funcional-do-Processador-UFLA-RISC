@@ -90,7 +90,7 @@ class CPU(MemoryLoader):
         # debug pra if e id
         #nome_instrucao = self.OPCODE_NAMES.get(opcode, "DESCONHECIDO")
         #print(f"[DEBUG P3] Ciclo em PC={current_pc}:")
-       #print(f"   -> Instrução: {nome_instrucao} (Opcode {opcode})")
+        #print(f"   -> Instrução: {nome_instrucao} (Opcode {opcode})")
         #print(f"   -> Registradores decodificados: Ra=R{ra}, Rb=R{rb}, Rc=R{rc}")
         #print(f"   -> Valores lidos: Val_Ra={val_ra}, Val_Rb={val_rb}")
         #print("-" * 40)
@@ -100,13 +100,13 @@ class CPU(MemoryLoader):
         signed_ra = self.uint32_to_signed(val_ra)
         signed_rb = self.uint32_to_signed(val_rb)
 
-        # --- Instruções ALU
+        # Instruções ALU
         if opcode == 1: # ADD
             res_signed = signed_ra + signed_rb
-            # Overflow: Soma de dois positivos dá negativo ou dois negativos dá positivo
+            # Overflow
             overflow = (signed_ra > 0 and signed_rb > 0 and res_signed < 0) or \
                        (signed_ra < 0 and signed_rb < 0 and res_signed > 0)
-            # Carry (unsigned overflow)
+            # Carry
             carry = (val_ra + val_rb) > 0xFFFFFFFF
             
             self.write_reg(rc, res_signed)
@@ -169,12 +169,37 @@ class CPU(MemoryLoader):
         elif opcode == 12: # COPY
             self.write_reg(rc, val_ra)
             self._update_flags_alu(val_ra)
+
+        # Instruções de Memória e Constantes
+        elif opcode == 14: # LCLH
+            current_rc = self.read_reg(rc)
+            lower_part = current_rc & 0x0000FFFF
+            res = (const16 << 16) | lower_part
+            self.write_reg(rc, res)
+
+        elif opcode == 15: # LCLL
+            current_rc = self.read_reg(rc)
+            upper_part = current_rc & 0xFFFF0000
+            res = upper_part | const16
+            self.write_reg(rc, res)
             
         elif opcode == 16: # LOAD
-            pass
+            addr = val_ra
+            try:
+                val_mem = self.read_mem(addr)
+                self.write_reg(rc, val_mem)
+            except IndexError:
+                print(f"Erro: Tentativa de leitura em endereço inválido {addr}")
+                self.state.halted = True
             
         elif opcode == 17: # STORE
-            pass
+            addr = self.read_reg(rc) # Endereço está em RC
+            val_to_store = val_ra    # Valor está em RA
+            try:
+                self.write_mem(addr, val_to_store)
+            except IndexError:
+                print(f"Erro: Tentativa de escrita em endereço inválido {addr}")
+                self.state.halted = True
             
         elif opcode == 22: # JUMP
             pass
