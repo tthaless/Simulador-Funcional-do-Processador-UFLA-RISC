@@ -201,6 +201,7 @@ class CPU(MemoryLoader):
                 print(f"Erro: Tentativa de escrita em endereço inválido {addr}")
                 self.state.halted = True
 
+
         # Instruções de Controle de Fluxo (jumps e branches)
         elif opcode == 18: # JAL
             self.write_reg(31, self.state.pc)
@@ -221,9 +222,50 @@ class CPU(MemoryLoader):
         elif opcode == 22: # J
             self.set_pc(addr24)
 
-        else:
-            # Se não é HALT e não conhecemos o opcode, é uma instrução desconhecida (ou NOP)
+        # Instruções Extras
+        elif opcode == 32: # MUL
+            res = signed_ra * signed_rb
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 33: # DIV
+            if signed_rb != 0:
+                res = int(signed_ra / signed_rb)
+                self.write_reg(rc, res)
+                self._update_flags_alu(res)
+            else:
+                print(f"Erro: Divisão por zero em PC={current_pc}")
+                self.state.halted = True
+
+        elif opcode == 34: # MOD
+            if signed_rb != 0:
+                self.write_reg(rc, signed_ra % signed_rb)
+            else:
+                 print(f"Erro: Divisão por zero (MOD) em PC={current_pc}")
+                 self.state.halted = True
+
+        elif opcode == 35: # INC
+            res = signed_ra + 1
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 36: # DEC
+            res = signed_ra - 1
+            self.write_reg(rc, res)
+            self._update_flags_alu(res)
+
+        elif opcode == 37: # MOVI
+            self.write_reg(rc, const16)
+
+        elif opcode == 38: # NOTBIT
+            self.write_reg(rc, ~(val_ra & val_rb))
+
+        elif opcode == 39: # NOP
             pass
+
+        else:
+            # Opcode desconhecido
+            print(f"AVISO: Opcode {opcode} desconhecido em PC={current_pc}")
 
 # -----------------------------------------------------------------------------
 # Bloco de Teste Rápido (Só roda se executar este arquivo diretamente)
