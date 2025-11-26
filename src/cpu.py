@@ -34,5 +34,10 @@ class CPU(MemoryLoader):
         print(f"--- Execução Finalizada em {cycle_count} ciclos ---")
 
     def step(self):
+        # 1. ESTÁGIO IF (Instruction Fetch) - Busca
+        # Busca a instrução na memória usando o PC atual
+        current_pc = self.state.pc
+        instrucao = self.fetch_instruction() 
         
-        pass
+        # Incrementa o PC para a próxima instrução
+        self.incr_pc()
