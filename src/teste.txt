@@ -1,0 +1,8 @@
+address 0
+add r1, r2, r3
+sub r5, r5, r1
+lclh r10, 15
+load r4, r10
+beq r1, r2, 10
+j 50
+halt
