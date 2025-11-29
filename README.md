@@ -45,7 +45,7 @@ Simulador-Funcional-do-Processador-UFLA-RISC-main/
 
 ```bash
 git clone [https://github.com/tthaless/Simulador-Funcional-do-Processador-UFLA-RISC.git]
-cd ufla-risc-simulador
+cd Simulador-Funcional-do-Processador-UFLA-RISC
 ```
 
 ### 2. Escreva um programa em assembly
@@ -141,7 +141,7 @@ python -m unittest discover
 
 ## Documentação
 
-Para informações detalhadas sobre a arquitetura, decisões de implementação e especificações técnicas, consulte, **apos rodar os testes**:
+Para informações detalhadas sobre a arquitetura, decisões de implementação e especificações técnicas, consulte, **após rodar os testes**:
 
 - [Documentação Final](documentacao/documentacao_final.md)
 - [Relatório de Testes Isolados](testes/isolados/relatorio_testes_isolados.txt)
