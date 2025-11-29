@@ -44,7 +44,7 @@ Simulador-Funcional-do-Processador-UFLA-RISC-main/
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/usuario/ufla-risc-simulador.git
+git clone [https://github.com/tthaless/Simulador-Funcional-do-Processador-UFLA-RISC.git]
 cd ufla-risc-simulador
 ```
 
@@ -66,7 +66,7 @@ halt
 
 ```bash
 cd src
-python3.11 interpretador.py
+python interpretador.py
 ```
 
 Isso gera o arquivo `programa.bin`.
@@ -74,19 +74,19 @@ Isso gera o arquivo `programa.bin`.
 ### 4. Execute o simulador
 
 ```bash
-python3.11 cpu.py
+python cpu.py
 ```
 
 Ou com logging detalhado:
 
 ```bash
-python3.11 cpu_logged.py
+python cpu_logged.py
 ```
 
 ### 5. Execute com um arquivo binário específico
 
 ```bash
-python3.11 cpu.py programa.bin
+python cpu.py programa.bin
 ```
 
 ## Testes
@@ -95,19 +95,19 @@ Execute os testes isolados (26 testes):
 
 ```bash
 cd src
-python3.11 testes_isolados.py
+python testes_isolados.py
 ```
 
 Execute os testes massivos (10 programas):
 
 ```bash
-python3.11 testes_massivos.py
+python testes_massivos.py
 ```
 
 Ou execute todos os testes:
 
 ```bash
-python3.11 -m unittest discover
+python -m unittest discover
 ```
 
 ## Conjunto de Instruções
