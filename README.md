@@ -141,11 +141,9 @@ python -m unittest discover
 
 ## Documentação
 
-Para informações detalhadas sobre a arquitetura, decisões de implementação e especificações técnicas, consulte, **após rodar os testes**:
+Para informações detalhadas sobre a arquitetura, decisões de implementação e especificações técnicas, consulte:
 
 - [Documentação Final](documentacao/documentacao_final.md)
-- [Relatório de Testes Isolados](testes/isolados/relatorio_testes_isolados.txt)
-- [Relatório de Testes Massivos](testes/massivos/relatorio_testes_massivos.txt)
 
 ## Licença
 
