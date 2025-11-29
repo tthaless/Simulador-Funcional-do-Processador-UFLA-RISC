@@ -104,12 +104,6 @@ Execute os testes massivos (10 programas):
 python testes_massivos.py
 ```
 
-Ou execute todos os testes:
-
-```bash
-python -m unittest discover
-```
-
 ## Conjunto de Instruções
 
 ### Instruções Base (22)
