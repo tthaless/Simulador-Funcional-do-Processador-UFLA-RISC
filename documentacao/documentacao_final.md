@@ -209,5 +209,5 @@ Os relatórios detalhados e os logs de execução de cada teste estão disponív
 ---
 
 **Universidade Federal de Lavras (UFLA)**  
-**Disciplina:** Arquitetura de Computadores II - GCC123/PCC507  
+**Disciplina:** Arquitetura de Computadores II - GCC123
 **Ano:** 2025
